@@ -1,7 +1,8 @@
 /* Roman Amangeldiyev — personal site
    ----------------------------------------------------
-   CV_URL: replace "#" below with your Google Drive (or PDF) link
-   to activate the "View CV" buttons.                          */
+   CV_URL: replace "#" below with your Google Drive (or PDF) link.
+   While it stays "#", both "View CV" buttons stay hidden rather than
+   rendering as buttons that do nothing when clicked.           */
 const CV_URL = "#";
 
 (function () {
@@ -57,21 +58,18 @@ const CV_URL = "#";
         { threshold: 0, rootMargin: "0px 0px -6% 0px" }
       );
       reveals.forEach((el) => io.observe(el));
+      // Safety net that does not disable later reveals: once everything has
+      // loaded, show whatever is already on screen. Elements further down the
+      // page still animate in on scroll, as intended.
+      window.addEventListener("load", showInView);
+    } else {
+      // No IntersectionObserver: fall back to a scroll handler, and after a
+      // moment reveal everything so content can never be stranded.
+      showInView();
+      window.addEventListener("scroll", showInView, { passive: true });
+      window.addEventListener("load", showInView);
+      setTimeout(() => reveals.forEach((el) => el.classList.add("in")), 1500);
     }
-    showInView();
-    window.addEventListener("scroll", showInView, { passive: true });
-    window.addEventListener("load", showInView);
-    // safety: never leave content hidden (kill transition so it can't stall)
-    setTimeout(
-      () =>
-        reveals.forEach((el) => {
-          if (!el.classList.contains("in")) {
-            el.style.transition = "none";
-            el.classList.add("in");
-          }
-        }),
-      1500
-    );
 
     /* ---- portrait: reveal only once loaded (no empty glow during load) ---- */
     (function () {
@@ -89,12 +87,19 @@ const CV_URL = "#";
       setTimeout(mark, 2500); // safety: never leave it hidden
     })();
 
-    /* ---- CV buttons ---- */
+    /* ---- CV buttons ----
+       They ship with the `hidden` attribute. Reveal them only once CV_URL is a
+       real link, so visitors never meet a button that does nothing. */
+    const cvReady = CV_URL && CV_URL !== "#";
     ["cvBtnHero", "cvBtnContact"].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.setAttribute("href", CV_URL);
-      if (CV_URL === "#") el.addEventListener("click", (e) => e.preventDefault());
+      if (cvReady) {
+        el.setAttribute("href", CV_URL);
+        el.hidden = false;
+      } else {
+        el.hidden = true;
+      }
     });
 
     /* ---- active nav link on scroll ---- */
@@ -131,9 +136,12 @@ const CV_URL = "#";
       const toggle = () => tt.classList.toggle("show", window.scrollY > 600);
       window.addEventListener("scroll", toggle, { passive: true });
       toggle();
-      tt.addEventListener("click", () =>
-        window.scrollTo({ top: 0, behavior: "smooth" })
-      );
+      tt.addEventListener("click", () => {
+        const reduce =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+      });
     })();
   }
 })();

@@ -1,4 +1,5 @@
 :root{
+  color-scheme:light;
   --paper:#F2F0E8;
   --paper-2:#ECEAE0;
   --card:#FAF8F2;
@@ -18,13 +19,14 @@
 html{scroll-behavior:smooth;scroll-padding-top:88px;}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
 [data-theme="ink"]{
+  color-scheme:dark;
   --paper:#100F0C;
   --paper-2:#16140F;
   --card:#1A1813;
   --ink:#F1EFE7;
   --ink-soft:#D5D1C5;
   --muted:#9C978A;
-  --faint:#736E62;
+  --faint:#8A8477;
   --line:rgba(241,239,231,.16);
   --line-strong:rgba(241,239,231,.30);
   --accent:#F1EFE7;
@@ -71,7 +73,7 @@ header.nav.scrolled{border-bottom:1px solid var(--line);}
 .navlinks a:hover::after{width:100%;}
 @media(max-width:760px){.navlinks{gap:18px;}}
 @media(max-width:600px){
-  .navlinks{gap:18px;width:100%;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;}
+  .navlinks{gap:18px;width:100%;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:8px;}
   .navlinks::-webkit-scrollbar{display:none;}
   .navlinks a{white-space:nowrap;}
 }
@@ -125,7 +127,7 @@ h1.name .last{color:var(--faint);}
   font-family:var(--font-mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
   padding:13px 20px;border-radius:0;border:1.5px solid var(--ink);
   background:var(--accent);color:var(--accent-ink);
-  transition:transform .2s ease, opacity .2s ease;
+  transition:transform .2s ease, box-shadow .2s ease;
 }
 .btn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink);}
 .btn.ghost{background:transparent;color:var(--ink);}
@@ -141,10 +143,12 @@ h1.name .last{color:var(--faint);}
 
 .portrait{position:relative;display:flex;order:1;}
 .hero-text{order:2;}
-.portrait .frame{position:relative;width:100%;display:flex;border:none;padding:0;background:transparent;transition:background .6s ease;}
+.portrait .frame{position:relative;width:100%;display:flex;border:none;padding:0;background:transparent;}
 .portrait.img-loaded .frame{background:radial-gradient(56% 60% at 50% 46%, color-mix(in srgb, var(--ink) 16%, transparent), transparent 74%);}
-.portrait img{width:100%;height:100%;aspect-ratio:4/5;object-fit:contain;object-position:50% 50%;filter:contrast(1.05) saturate(1.06);opacity:0;transition:opacity .6s ease;}
-.portrait.img-loaded img{opacity:1;}
+.portrait img{width:100%;height:100%;aspect-ratio:4/5;object-fit:contain;object-position:50% 50%;filter:contrast(1.05) saturate(1.06);}
+/* Fade-in only when JS is running to remove it again; without JS the portrait is never hidden. */
+html.js .portrait img{opacity:0;transition:opacity .6s ease;}
+html.js .portrait.img-loaded img{opacity:1;}
 @media(max-width:900px){
   .hero-grid{grid-template-columns:1fr;gap:36px;align-items:start;}
   .portrait{max-width:360px;order:2;}
@@ -191,6 +195,8 @@ section{padding:96px 0;border-top:1px solid var(--line);}
 .fact .n{font-family:var(--font-display);font-size:38px;line-height:1;margin-bottom:8px;}
 .fact .l{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
 @media(max-width:740px){.about-grid{grid-template-columns:1fr;}.facts{grid-template-columns:1fr;}}
+/* Empty layout spacers must not occupy a row once the grids collapse to one column. */
+@media(max-width:740px){.sec-num:empty{display:none;}}
 
 /* ---- work / ventures ---- */
 .work-list{display:flex;flex-direction:column;}
@@ -219,7 +225,7 @@ section{padding:96px 0;border-top:1px solid var(--line);}
 .cap{background:var(--paper);padding:26px 24px;transition:background .2s ease;}
 .cap:hover{background:var(--card);}
 .cap .ci{font-family:var(--font-mono);font-size:11px;color:var(--faint);letter-spacing:.1em;margin-bottom:14px;}
-.cap h4{font-family:var(--font-display);font-weight:500;font-size:21px;margin:0 0 8px;letter-spacing:-.01em;}
+.cap h3{font-family:var(--font-display);font-weight:500;font-size:21px;margin:0 0 8px;letter-spacing:-.01em;}
 .cap p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.5;}
 @media(max-width:740px){.stack-grid{grid-template-columns:1fr;}.cap-grid{grid-template-columns:1fr;}}
 
@@ -230,7 +236,7 @@ section{padding:96px 0;border-top:1px solid var(--line);}
 .post:last-child{border-bottom:1px solid var(--line);}
 .post:hover{background:var(--card);}
 .post .idx{font-family:var(--font-mono);font-size:12px;color:var(--faint);}
-.post h4{font-family:var(--font-display);font-weight:500;font-size:24px;margin:0 0 4px;letter-spacing:-.01em;}
+.post h3{font-family:var(--font-display);font-weight:500;font-size:24px;margin:0 0 4px;letter-spacing:-.01em;}
 .post .pm{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
 .post .arr{color:var(--faint);transition:transform .2s ease,color .2s ease;}
 .post:hover .arr{transform:translate(4px,-4px);color:var(--ink);}
@@ -296,3 +302,14 @@ footer{border-top:1px solid var(--line);padding:40px 0;}
   /* Hero is above the fold: show instantly on load — no entrance fade, so a refresh never shows an empty page */
   html.js .hero .reveal{opacity:1;transform:none;transition:none;animation:none;}
 }
+
+/* ---- hidden utility ----
+   .btn sets display:inline-flex, which outranks the UA [hidden] rule, so the
+   CV buttons would still show while hidden. */
+[hidden]{display:none!important;}
+
+/* ---- focus ----
+   Not a fix for a removed indicator (nothing here sets outline:none) - this just
+   replaces the UA default ring with one that matches the palette. */
+a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px;}
+.soc:focus-visible,.to-top:focus-visible{outline-offset:4px;}
