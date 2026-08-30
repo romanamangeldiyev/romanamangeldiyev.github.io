@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://romanamangeldiev.github.io/sitemap.xml
+Sitemap: https://romanamangeldiyev.github.io/sitemap.xml
